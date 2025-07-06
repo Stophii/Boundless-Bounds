@@ -2,7 +2,7 @@
 
 ## Description
 
-A guide on bounds with different approaches to making menus in Turbo!
+A guide on [`bounds`](https://docs.turbo.computer/learn/api/bounds) with different approaches to making menus in Turbo!
 
 ## Let's talk about text
 
