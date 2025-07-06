@@ -203,152 +203,29 @@ Here is a preview with the old menu still visible
 
 ![output](https://github.com/user-attachments/assets/310a32c4-ebad-42ac-8ce4-5540b3f15a74)
 
+## Exploring bounds
 
-## Adding Sprites
+Now we've showcased what bounds can do i'll give you a list of methods to get you started using bounds!
 
-Now let's get into adding some sprites! First off we need a sprites folder, this is as simple as making a new folder named `sprites` right alongside your src folder.
+- `.height()` sets your bounds height the specified units.
+- `.width()` sets your bounds width the specified units.
+- `.translate_x()` move your bounds the specified units left or right.
+- `.translate_y()` move your bounds the specified units up or down.
+- `.inset_left()` shrinks your bounds the specified units on the left side. If inset **exceeds** width your bounds with disappear!
+- `.inset_right()` shrinks your bounds the specified units on the right side. If inset **exceeds** width your bounds with disappear!
+- `.inset_top()` adds empty space above your bounds shrinking them closer from above. If inset value is too high your bounds will disappear.
+- `.inset_bottom()` adds empty space below your bounds shrinking them closer from below. If inset value is too high your bounds will disappear.
+- `.anchor_left()` is the ability to anchor your bounds to the left of your specified bounds.
+- `.anchor_right()` is the ability to anchor your bounds to the right of your specified bounds.
+- `.anchor_center()` centers the bounds in the middle of the specified bounds.
+- `.anchor_top()` anchors your bounds to the top of your specified bounds.
+- `.anchor_bottom()` anchors your bounds to the bottom of your specified bounds.
+- `.rows_with_gap(,)` set a number of rows and a gap size to use.
+- `.columns_with_gap(,)` set a number of columns and a gap size to use.
 
-Sprites added to this folder in the file format of: `.png`, `.bmp`, `.jpg/.jpeg`, `.gif`, `.webp`, and `.ase/.aseprite` will be able to be used!
+This should be more than enough to get started with using bounds. There is an **TON** of different methods you can tap into with this Turbo macro and you can see even more of them if you `cmd + click` the `bounds` macro inside of Visual Studio Code!
 
-> **Tip:** You can make a `fonts` and `audio` folder in the same place to add sounds or sound effects as well as fonts!
-
-```rust
-sprite!("Decapod#Idle");
-sprite!("Wizzy", x = 150, y = 45);
-```
-
-Sprites made in Aesprite will need to have their appropriate tag referenced, in this scenario I am choosing to display the idle animation with the `#Idle` tag.
-
-If you wanted to use inputs to change your sprite you can use an animation key and access animation commands
-
-```rust
-    let crab = animation::get("crab");
-
-    sprite!(
-	animation_key = "crab",
-	default_sprite = "Decapod#Idle",
-    );
-
-    if gamepad(0).right.just_pressed() {
-	crab.use_sprite("Decapod#Ranged Attack");
-	crab.set_repeat(1);
-    }
-```
-
-now if I hit the right arrow key or D on the keyboard my sprite will use it's `#Ranged Attack` and then go back to `#Idle`
-
-> **Tip:** Check out the sprite SDK for more info [here](https://docs.turbo.computer/learn/api/sprites)! 
+> **Tip:** Our specified bounds are `&canvas_bounds` for this guide. You can easily set up and use a different bounds than `let canvas_bounds = bounds::canvas()`! 
 
 
-## Power of Tween
 
-Now we have some sprites but nothing moves other than the animations I have. let's go ahead and add some tweening so the wizzy dodged the attack!
-
-First let's add a `Tween` into the `Gamestate`
-
-```rust
-turbo::init! {
-    struct GameState {
-        screen: Screen,
-        wizzy_tween: Tween<f32>,
-    } = {
-        Self {
-            screen: Screen::Title,
-            wizzy_tween: Tween::new(150.0)
-                .duration(120)
-                .ease(Easing::EaseOutCubic),
-
-        }
-    }
-}
-```
-
-with `wizzy_tween` we just need to go change our x position of the wizzy sprite to the `wizzy_tween` we can do that with `.get()`
-
-
-```rust
-let x = state.wizzy_tween.get();
-
-```
-
-and update the sprite to match
-
-```rust
-sprite!("Wizzy", x = x, y = 45);
-
-```
-
-and let's just use our gamepad input as the trigger to change the position
-
-```rust
-    if gamepad(0).right.just_pressed() {
-	crab.use_sprite("Decapod#Ranged Attack");
-	crab.set_repeat(1);
-	state.wizzy_tween.set(200.0); //<-- add this
-    }
-```
-
-now the wizzy dodges the attack!
-
-If we wanted we can reset him like this
-
-```rust
-    if state.wizzy_tween.done() {
-	state.wizzy_tween.set(150.0);
-    }
-```
-
-## Pushing the Bounds
-
-Alright now for the grand finale let's add in a button we can click with the mouse. We'll use `bounds` to accomplish this. let's start off by adding in our `pointer` and our `canvas_bounds`
-
-```rust
-    let p = pointer();
-    let canvas_bounds = bounds::canvas();
-```
-
-Now let's build on this by adding in our button with `bounds`!
-
-```rust
-    let button = Bounds::with_size(48, 14)
-	.anchor_center(&canvas_bounds)
-	.translate_y(16);
-    
-    let is_btn_hovered = p.xy().intersects_bounds(button);
-
-    let (regular_color, hover_color, pressed_color) = (0x33CCFFff, 0x66DDFFFF, 0x00FFFFFF);
-
-    let button_color = if p.pressed() && is_btn_hovered {
-	pressed_color
-    } else if is_btn_hovered {
-	hover_color
-    } else {
-	regular_color
-    };
-
-    rect!(
-	color = button_color,
-	xy = button.xy(),
-	wh = button.wh(),
-	border_radius = 2,
-    );
-
-    let label_bounds = button.inset_left(4).inset_top(4);
-    text!("Attack!", x = label_bounds.x(), y = label_bounds.y(), font = "medium");
-```
-
-and finally let's add a reaction for clicking this button
-
-```rust
-    if is_btn_hovered && p.just_pressed() {
-	crab.use_sprite("Decapod#Ranged Attack");
-	crab.set_repeat(1);
-	state.wizzy_tween.set(200.0);
-    }
-```
-
-Now instead of key inputs we can just press the button to try to attack the Wizzy!
-
-Thanks for following along, hopefully you understand how to use a `State Machine`, add a `Sprite`, `Tween` an object, and use `Bounds`!
-
->**Tip** Join our [discord](discord.gg/V5YWWvQvKW) and message `Stophy` for questions!
