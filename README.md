@@ -203,7 +203,11 @@ Here is a preview with the old menu still visible
 
 ![output](https://github.com/user-attachments/assets/310a32c4-ebad-42ac-8ce4-5540b3f15a74)
 
-## Exploring bounds
+## Sprites and Bounds collab
+
+Now that we have the menu let's change out the square for a sprite. It's truly very simple to do 
+
+## Exploring bounds on your own
 
 Now we've showcased what bounds can do i'll give you a list of methods to get you started using bounds!
 
