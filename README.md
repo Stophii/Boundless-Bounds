@@ -2,13 +2,13 @@
 
 ## Description
 
-A walkthrough on how to approach UI in Turbo!
+A guide on bounds with different approaches to making menus in Turbo!
 
-## Lets talk about text
+## Let's talk about text
 
-On any new Turbo project we are subject to a 256x144 canvas. This doesn't seem like a lot of space to allocate to a UI. On top of that it roughly allows 50 characters using the basic turbo font from screen to screen.
+Every new Turbo project starts with a 256x144 canvas. That’s not a lot of space for a UI. On top of that it roughly allows 50 characters using the basic turbo font from screen to screen.
 
-This usually amounts to about one sentence. Well when we are writing up descriptions one sentence doesn't always cut it.
+This usually amounts to about one sentence. Well, when we’re writing descriptions, one sentence doesn’t always cut it.
 
 I have a few tips and tricks that will remedy this early developer issue.
 
@@ -36,7 +36,7 @@ pub fn wrap_textbetter(text: &str, max_line_length: usize) -> String {
 }
 ```
 
-Introducing `wrap_textbetter` a function that will allow you to write out a string as long as you want and then set a character limit and wrap it.
+Introducing `wrap_textbetter`, a function that will allow you to write out a string as long as you want and then set a character limit and wrap it.
 
 It gets rid of any excess space if your sentence hit the character limit on an empty space and allows for clean text wrapping. Simple and easy.
 
@@ -48,17 +48,17 @@ let wrapped = wrap_textbetter(text, 50);
 text!(&wrapped, x = 0, y = 20, color = 0xffffffff);
 ```
 
-Just set a `text` and a `wrapped`. the `wrapped` is just referencing the `text` and a character limit. You can rename `text` or `wrapped` to whatever you desire, it's flexible!
+Just set a `text` and a `wrapped`. the `wrapped` is just referencing the `text` and a providing a character limit. You can rename `text` or `wrapped` to whatever you desire, it's flexible!
 
 Here is an example!
 
 <img width="880" alt="Screenshot 2025-07-05 at 2 06 58 PM" src="https://github.com/user-attachments/assets/2aa5df64-7255-42f0-b6b9-9353267e5747" />
 
-> **Tip:** Turbo has it's own built in text wrapping with `text_box!` macro!
+> **Tip:** Turbo has its own built in text wrapping with `text_box!` macro [here](https://docs.turbo.computer/learn/api/text_box/)!
 
 ## UI done simply
 
-Most games you make are going to need a UI of some sort and that UI will most likely consist of menus. A really simple way to set up a menu is through a `selection` in the gamestate intiliazed as a `usize`
+Most games you make are going to need a UI of some sort and that UI will most likely consist of menus. A really simple way to set up a menu is through a `selection` in the gamestate initialized as a `usize`
 
 ```rust
 struct GameState {
@@ -72,11 +72,11 @@ impl GameState {
     }
 ```
 
-I've called mine `menu_selection` and with it you can easily setup a simple menu.
+I've called mine `menu_selection` and with it you can easily set up a simple menu.
 
 Combining `wrap_textbetter` and the `menu_selection` will give me a basic menu if I add in some `gamepad` inputs to change the value of `menu_selection`
 
-Lets change the `update` to show just how simple it can be to add in UI elements
+Let's change the `update` to show just how simple it can be to add in UI elements
 
 ```rust
 fn update(&mut self) {
@@ -113,7 +113,7 @@ fn update(&mut self) {
 }
 ```
 
-![Menufast](https://github.com/user-attachments/assets/560497e4-b97d-4ac3-b5ee-0fe24e6fff7e)
+![Simple](https://github.com/user-attachments/assets/5e3d95c7-fac9-40c4-9f9a-cd7748a9bd9e)
 
 A nice simple easy menu. You can highlight the text instead and use `match` instead of `contains` for more control
 
@@ -142,9 +142,9 @@ Step one is to define the `canvas_bounds`
 let canvas_bounds = bounds::canvas();
 ```
 
-call it what you like but with this setup it's going to pull the resolution from your `turbo.toml` and you'll be able to use that setup a HUD of some sort.
+Call it what you like, but with this setup it's going to pull the resolution from your `turbo.toml` and the first step to making a snazzy HUD is complete!
 
-lets approach menus again
+lets approach menus like we did earlier but with bounds
 
 ```rust
 let canvas_bounds = bounds::canvas();
@@ -197,26 +197,47 @@ for (i, btn) in buttons.into_iter().enumerate() {
 }
 ```
 
+![Menu](https://github.com/user-attachments/assets/610f5881-80ed-4171-bc26-f456f5e57e54)
+
 We can add this under the `match` or `contains` from earlier. This gives us the same control functionality but on a menu written with `bounds`.
 
-Here is a preview with the old menu still visible
+## Sprites X Bounds collab
 
-![output](https://github.com/user-attachments/assets/310a32c4-ebad-42ac-8ce4-5540b3f15a74)
+Now that we have the menu let's change out the square for a sprite. It's truly very simple to do
 
-## Sprites and Bounds collab
+```rust
+if self.menu_selection == i {
+    let sprite = btn
+        .anchor_left(&btn)
+        .translate_x(-12)
+        .anchor_center_y(&btn);
 
-Now that we have the menu let's change out the square for a sprite. It's truly very simple to do 
+    sprite!(
+        "Slime",
+        x = sprite.x(),
+        y = sprite.y(),
+    )
+}
+```
+
+If we make a new `bounds` by the name of `sprite` we can set it equal to `btn`
+
+We can then alter the position of the bounds, I use `.anchor_left`, `.translate_x`, and `.anchor_center_y`. This puts it just left of the button
+
+This allows our slimes to appear based on the `menu_selection` button after setting the sprites x and y values to `sprite.x()` and `sprite.y()`
+
+![Sprite_menu](https://github.com/user-attachments/assets/51694b0e-e428-4549-86b7-a6cc74009ac6)
 
 ## Exploring bounds on your own
 
-Now we've showcased what bounds can do i'll give you a list of methods to get you started using bounds!
+Now that we've showcased what bounds can do, I'll give you a list of methods to get you started using bounds!
 
 - `.height()` sets your bounds height the specified units.
 - `.width()` sets your bounds width the specified units.
 - `.translate_x()` move your bounds the specified units left or right.
 - `.translate_y()` move your bounds the specified units up or down.
-- `.inset_left()` shrinks your bounds the specified units on the left side. If inset **exceeds** width your bounds with disappear!
-- `.inset_right()` shrinks your bounds the specified units on the right side. If inset **exceeds** width your bounds with disappear!
+- `.inset_left()` shrinks your bounds the specified units on the left side. If inset **exceeds** width your bounds will disappear!
+- `.inset_right()` shrinks your bounds the specified units on the right side. If inset **exceeds** width your bounds will disappear!
 - `.inset_top()` adds empty space above your bounds shrinking them closer from above. If inset value is too high your bounds will disappear.
 - `.inset_bottom()` adds empty space below your bounds shrinking them closer from below. If inset value is too high your bounds will disappear.
 - `.anchor_left()` is the ability to anchor your bounds to the left of your specified bounds.
@@ -227,9 +248,9 @@ Now we've showcased what bounds can do i'll give you a list of methods to get yo
 - `.rows_with_gap(,)` set a number of rows and a gap size to use.
 - `.columns_with_gap(,)` set a number of columns and a gap size to use.
 
-This should be more than enough to get started with using bounds. There is an **TON** of different methods you can tap into with this Turbo macro and you can see even more of them if you `cmd + click` the `bounds` macro inside of Visual Studio Code!
+This should be more than enough to get started with using bounds. There is a **TON** of different methods you can tap into with this Turbo macro and you can see even more of them if you `cmd + click` the `bounds` macro inside of Visual Studio Code!
 
-> **Tip:** Our specified bounds are `&canvas_bounds` for this guide. You can easily set up and use a different bounds than `let canvas_bounds = bounds::canvas()`! 
+> **Tip:** Our specified bounds for this project are `&canvas_bounds`. You can easily set up and use a different bounds than `let canvas_bounds = bounds::canvas()`, it's just what I did! 
 
 
 
