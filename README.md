@@ -4,7 +4,7 @@
 
 A guide on [`bounds`](https://docs.turbo.computer/learn/api/bounds) with different approaches to making menus in Turbo!
 
-## Let's talk about text
+## Let's Talk About Text
 
 Every new Turbo project starts with a 256x144 canvas. That’s not a lot of space for a UI. On top of that it roughly allows 50 characters using the basic turbo font from screen to screen.
 
@@ -56,7 +56,7 @@ Here is an example!
 
 > **Tip:** Turbo has its own built in text wrapping with `text_box!` macro [here](https://docs.turbo.computer/learn/api/text_box/)!
 
-## UI done simply
+## UI Done Simply
 
 Most games you make are going to need a UI of some sort and that UI will most likely consist of menus. A really simple way to set up a menu is through a `selection` in the gamestate initialized as a `usize`
 
@@ -113,9 +113,9 @@ fn update(&mut self) {
 }
 ```
 
-![Simple](https://github.com/user-attachments/assets/5e3d95c7-fac9-40c4-9f9a-cd7748a9bd9e)
-
 A nice simple easy menu. You can highlight the text instead and use `match` instead of `contains` for more control
+
+![Simple](https://github.com/user-attachments/assets/5e3d95c7-fac9-40c4-9f9a-cd7748a9bd9e)
 
 ```rust
 match self.menu_selection {
@@ -132,7 +132,7 @@ Using `match` will allow us to do a number of things inside each `match` arm so 
 > **Tip:** A new line of text in Turbo is roughly 9 units down using the default font, `medium`. 
 
 
-## UI done smart
+## UI Done Smart
 
 Turbo has your back though, not everything needs to be `wrap_textbetter` and if that is your solution then awesome, you're embracing the fast, simple, and fun style of making games in Turbo. In Turbo we have bounds which can be used on any canvas and it's automatically going to anchor and space things out to your desire.
 
@@ -196,12 +196,13 @@ for (i, btn) in buttons.into_iter().enumerate() {
     );
 }
 ```
+We can add this under the `match` or `contains` from earlier. This gives us the same control functionality but on a menu written with `bounds`.
 
 ![Menu](https://github.com/user-attachments/assets/610f5881-80ed-4171-bc26-f456f5e57e54)
 
-We can add this under the `match` or `contains` from earlier. This gives us the same control functionality but on a menu written with `bounds`.
+> **Tip:** Our controls don't change because we are using the same values and same amount of options! 
 
-## Sprites X Bounds collab
+## Sprites & Bounds — Best of Friends
 
 Now that we have the menu let's change out the square for a sprite. It's truly very simple to do
 
@@ -228,7 +229,7 @@ This allows our slimes to appear based on the `menu_selection` button after sett
 
 ![Sprite_menu](https://github.com/user-attachments/assets/51694b0e-e428-4549-86b7-a6cc74009ac6)
 
-## Exploring bounds on your own
+## Exploring Bounds On Your Own
 
 Now that we've showcased what bounds can do, I'll give you a list of methods to get you started using bounds!
 
@@ -248,9 +249,19 @@ Now that we've showcased what bounds can do, I'll give you a list of methods to 
 - `.rows_with_gap(,)` set a number of rows and a gap size to use.
 - `.columns_with_gap(,)` set a number of columns and a gap size to use.
 
+> **Tip:** Our specified bounds for this project are `&canvas_bounds`. You can easily set up and use a different bounds than `let canvas_bounds = bounds::canvas()`, it's just what I did!
+
 This should be more than enough to get started with using bounds. There is a **TON** of different methods you can tap into with this Turbo macro and you can see even more of them if you `cmd + click` the `bounds` macro inside of Visual Studio Code!
 
-> **Tip:** Our specified bounds for this project are `&canvas_bounds`. You can easily set up and use a different bounds than `let canvas_bounds = bounds::canvas()`, it's just what I did! 
+> **Tip:** This works on any Turbo macro, not just `bounds`! 
 
+## Final Notes
 
+As usual, thanks for the read. Some final notes to keep in mind:
+
+- Lean toward more visual or simple UIs to conserve space on smaller canvases. *(Look to old Game Boy/NES games for inspiration.)*  
+- Simple does **not** mean bad.  
+- Playtesting and gathering feedback on how players navigate your UI is valuable — it helps improve it to its best version.  
+- `match` is your friend for smaller menus. For larger menus or scene transitions, consider a state machine approach.  
+- Keep rendering logic and control input logic for menus **separate** — it keeps things cleaner and easier to debug.
 
