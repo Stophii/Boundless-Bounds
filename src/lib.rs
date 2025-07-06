@@ -1,9 +1,9 @@
 //lib.rs
 
-use turbo::prelude::*;
+use turbo::*;
+
 
 #[turbo::game]
-#[derive(Debug, Clone, PartialEq, BorshSerialize, BorshDeserialize)]
 struct GameState {
     menu_selection: usize,
 }
@@ -16,7 +16,7 @@ impl GameState {
     }
     fn update(&mut self) {
         //controls
-        if gamepad(0).up.just_pressed() {
+        if gamepad::get(0).up.just_pressed() {
             if self.menu_selection > 0 {
                 self.menu_selection -= 1
             } else {
@@ -24,7 +24,7 @@ impl GameState {
             }
         };
 
-        if gamepad(0).down.just_pressed() {
+        if gamepad::get(0).down.just_pressed() {
             if self.menu_selection < 3 {
                 self.menu_selection += 1
             } else {
@@ -51,7 +51,7 @@ impl GameState {
             };
 
             let (fill_color, border_color) = if self.menu_selection == i {
-                if gamepad(0).a.just_pressed() {
+                if gamepad::get(0).a.just_pressed() {
                     (0xffffffff, 0xffc0cbff)
                 } else {
                     (0x82c8ffff, 0xffc0cbff)
