@@ -10,45 +10,15 @@ Every new Turbo project starts with a 256x144 canvas. That’s not a lot of spac
 
 This usually amounts to about one sentence. Well, when we’re writing descriptions, one sentence doesn’t always cut it.
 
-I have a few tips and tricks that will remedy this early developer issue.
-
-```rust
-pub fn wrap_textbetter(text: &str, max_line_length: usize) -> String {
-    let mut lines = Vec::new();
-    let mut current_line = String::new();
-
-    for word in text.split_whitespace() {
-        if !current_line.is_empty() && current_line.len() + word.len() + 1 > max_line_length {
-            lines.push(current_line);
-            current_line = String::new();
-        }
-        if !current_line.is_empty() {
-            current_line.push(' ');
-        }
-        current_line.push_str(word);
-    }
-
-    if !current_line.is_empty() {
-        lines.push(current_line);
-    }
-
-    lines.join("\n")
-}
-```
-
-Introducing `wrap_textbetter`, a function that will allow you to write out a string as long as you want and then set a character limit and wrap it.
+Turbo has the answer to this with `text_box!` which will wrap your text inside a specified `w` and `h`
 
 It gets rid of any excess space if your sentence hit the character limit on an empty space and allows for clean text wrapping. Simple and easy.
 
 It's even easy to call
 
 ```rust
-let text = "This is a really long sentence that needs to wrap to a new line or it'll spill off screen.";
-let wrapped = wrap_textbetter(text, 50);
-text!(&wrapped, x = 0, y = 20, color = 0xffffffff);
+text_box!("This is a really long sentence that needs to wrap to a new line or it'll spill off screen.", w = 256, h = 144);
 ```
-
-Just set a `text` and a `wrapped`. the `wrapped` is just referencing the `text` and a providing a character limit. You can rename `text` or `wrapped` to whatever you desire, it's flexible!
 
 Here is an example!
 
@@ -80,9 +50,8 @@ Let's change the `update` to show just how simple it can be to add in UI element
 
 ```rust
 fn update(&mut self) {
-    let text = "Shop Fight Run Item";
-    let wrapped = wrap_textbetter(text, 5);
-    text!(&wrapped, x = 0, y = 20, color = 0xffffffff);
+    text_box!("Shop Fight Run Item", w = 30, h = 144, y = 20);
+
 
     if gamepad(0).up.just_pressed() {
         if self.menu_selection > 0 {
