@@ -53,7 +53,7 @@ fn update(&mut self) {
     text_box!("Shop Fight Run Item", w = 30, h = 144, y = 20);
 
 
-    if gamepad(0).up.just_pressed() {
+    if gamepad::get(0).up.just_pressed() {
         if self.menu_selection > 0 {
             self.menu_selection -= 1
         } else {
@@ -61,7 +61,7 @@ fn update(&mut self) {
         }
     };
 
-    if gamepad(0).down.just_pressed() {
+    if gamepad::get(0).down.just_pressed() {
         if self.menu_selection < 3 {
             self.menu_selection += 1
         } else {
