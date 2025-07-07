@@ -120,8 +120,7 @@ let canvas_bounds = bounds::canvas();
 
 let buttons = canvas_bounds
     .height(100)
-    .inset_left(80)
-    .inset_right(80)
+    .width(50)
     .anchor_center(&canvas_bounds)
     .rows_with_gap(4, 12);
 
