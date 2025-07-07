@@ -221,6 +221,28 @@ Now that we've showcased what bounds can do, I'll give you a list of methods to 
 - `.rows_with_gap(,)` set a number of rows and a gap size to use.
 - `.columns_with_gap(,)` set a number of columns and a gap size to use.
 
+You can try this out on something simple like this
+
+```rs
+let canvas_bounds = bounds::canvas();
+
+let button = canvas_bounds
+    .height(100)
+    .width(50)
+    .anchor_center(&canvas_bounds);
+
+rect!(
+    x = button.x(),
+    y = button.y(),
+    w = button.w(),
+    h = button.h(),
+    color = 0xffffffff,
+);
+```
+this just draws a simple rect using bounds. This rect could be your pause menu, start menu, health bar overlay, you name it!
+
+<img width="836" alt="Screenshot 2025-07-07 at 1 42 48 PM" src="https://github.com/user-attachments/assets/afed0785-9e70-4dae-9cda-fdfd490f1369" />
+
 > **Tip:** Our specified bounds for this project are `&canvas_bounds`. You can easily set up and use a different bounds than `let canvas_bounds = bounds::canvas()`, it's just what I did!
 
 This should be more than enough to get started with using bounds. There is a **TON** of different methods you can tap into with this Turbo macro and you can see even more of them if you `cmd + click` the `bounds` macro inside of Visual Studio Code!
