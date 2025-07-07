@@ -135,9 +135,13 @@ for (i, btn) in buttons.into_iter().enumerate() {
 
     // === Change color if hovered ===
     let (fill_color, border_color) = if self.menu_selection == i {
-        (0x82c8ffff, 0xffc0cbff) // Hovered colors
+        if gamepad::get(0).a.just_pressed() {
+            (0xffffffff, 0xffc0cbff)
+        } else {
+            (0x82c8ffff, 0xffc0cbff)
+        }
     } else {
-        (0x0055ffff, 0xffc0cbff) // Default colors
+        (0x0055ffff, 0xffc0cbff)
     };
 
     rect!(
